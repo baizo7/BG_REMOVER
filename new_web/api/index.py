@@ -3,18 +3,14 @@ from rembg import remove
 import io
 import os
 
-# Debug print to verify app is loading on Render
 print("==== Flask app is being loaded ====")
 
-# Create Flask app instance
-app = Flask(__name__, template_folder="../templates")
+app = Flask(__name__, template_folder=os.path.join(os.path.dirname(__file__), '..', 'templates'))
 
-# Home route
 @app.route('/')
 def home():
     return render_template('index.html')
 
-# Route to remove background
 @app.route('/remove-bg', methods=['POST'])
 def remove_bg():
     if 'image' not in request.files:
@@ -33,9 +29,8 @@ def remove_bg():
         print("Error during image processing:", e)
         return 'Error processing image', 500
 
-
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
-    debug = os.environ.get("FLASK_DEBUG", "true").lower() == "true"
-    print("==== Starting Flask server ====")
+    debug = os.environ.get("FLASK_DEBUG", "false").lower() == "true"
+    print(f"==== Starting Flask server on port {port} ====")
     app.run(host='0.0.0.0', port=port, debug=debug)
