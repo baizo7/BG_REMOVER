@@ -6,8 +6,8 @@ import os
 # Debug print to verify app is loading on Render
 print("==== Flask app is being loaded ====")
 
-# Adjust template_folder path assuming templates is a folder alongside this file
-app = Flask(__name__, template_folder="templates")
+# Create Flask app instance
+app = Flask(__name__, template_folder="../templates")
 
 # Home route
 @app.route('/')
@@ -35,7 +35,6 @@ def remove_bg():
 
 
 if __name__ == '__main__':
-    # Use PORT environment variable from Render or default to 5000 for local runs
     port = int(os.environ.get("PORT", 5000))
     debug = os.environ.get("FLASK_DEBUG", "true").lower() == "true"
     print("==== Starting Flask server ====")
