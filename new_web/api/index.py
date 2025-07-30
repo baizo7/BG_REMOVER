@@ -5,6 +5,7 @@ import os
 
 print("==== Flask app is being loaded ====")
 
+# Set the template folder path relative to this file
 app = Flask(__name__, template_folder=os.path.join(os.path.dirname(__file__), '..', 'templates'))
 
 @app.route('/')
@@ -18,12 +19,16 @@ def remove_bg():
 
     file = request.files['image']
     input_image = file.read()
+
     try:
-        output_image = remove(input_image)
+        output_image = remove(input_image)  # rembg remove expects bytes input, returns bytes output
+
+        # Use "download_name" if you have Flask 2.0+, otherwise fallback to "attachment_filename" and as_attachment=True
         return send_file(
             io.BytesIO(output_image),
             mimetype='image/png',
-            download_name='output.png'
+            download_name='output.png',
+            as_attachment=True
         )
     except Exception as e:
         print("Error during image processing:", e)
@@ -32,5 +37,5 @@ def remove_bg():
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     debug = os.environ.get("FLASK_DEBUG", "false").lower() == "true"
-    print(f"==== Starting Flask server on port {port} ====")
+    print(f"==== Starting Flask server on port {port} with debug={debug} ====")
     app.run(host='0.0.0.0', port=port, debug=debug)
